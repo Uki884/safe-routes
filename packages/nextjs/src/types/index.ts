@@ -1,6 +1,10 @@
 import { RouteFunctionDefinition } from "./route";
 
-export type { DynamicRouteType, RouteFunctionDefinition, RouteSegment } from "./route";
+export type {
+  DynamicRouteType,
+  RouteFunctionDefinition,
+  RouteSegment,
+} from "./route";
 
 export type FileContentOption = {
   routes: RouteFunctionDefinition[];

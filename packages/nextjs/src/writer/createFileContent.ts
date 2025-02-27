@@ -2,7 +2,10 @@ import { transformFunctionExports } from "../transformer/transformFunctionExport
 import { transformFunctionShared } from "../transformer/transformFunctionShared";
 import { FileContentOption } from "../types";
 
-export const createFileContent = ({ routes, options }: FileContentOption): string => {
+export const createFileContent = ({
+  routes,
+  options,
+}: FileContentOption): string => {
   const shared = transformFunctionShared();
   const exports = transformFunctionExports({ routes, options });
 

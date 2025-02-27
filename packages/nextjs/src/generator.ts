@@ -1,9 +1,10 @@
 import fs from "fs/promises";
+import { createDefaultConfigFile } from "./generator/createDefaultConfig";
 import { createAppScanner } from "./scanner/createAppScanner";
 import { createPagesScanner } from "./scanner/createPagesScanner";
+import { UserOptions } from "./types";
 import { createFileContent } from "./writer/createFileContent";
 import { writeToFile } from "./writer/writeToFile";
-import { UserOptions } from "./types";
 
 type Options = {
   appDir: string;
@@ -13,8 +14,11 @@ type Options = {
 
 export async function generateTypes({ appDir, pagesDir, options }: Options) {
   try {
-    const outDir = options.outDir || ".safe-routes";
+    const outDir = options.outDir || "generated/safe-routes";
     await fs.mkdir(outDir, { recursive: true });
+
+    await createDefaultConfigFile(outDir);
+
     const appScanner = createAppScanner({ inputDir: appDir, outDir });
     const pagesScanner = createPagesScanner({ inputDir: pagesDir, outDir });
 

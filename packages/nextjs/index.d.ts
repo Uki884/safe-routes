@@ -1,1 +1,1 @@
-export * from ".safe-routes/index";
+export * from "generated/safe-routes/index";

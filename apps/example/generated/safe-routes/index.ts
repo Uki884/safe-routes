@@ -39,6 +39,8 @@ type IsAllOptional<T> = { [K in keyof T]?: any } extends T ? true : false;
 type HasSearchParams<T> = T extends { searchParams: undefined } ? false : true;
 type HasParams<T> = T extends Record<string, never> ? false : true
 type PickSearchParams<T extends SafeRoutePath> = Pick<typeof safeRoutes[T], 'searchParams'>;
+type IsSearchParams<T> = symbol extends keyof T ? false : true;
+type ExportedQuery<T> = IsSearchParams<T> extends true ? T & import("./types").GlobalSearchParams : import("./types").GlobalSearchParams;
 
 type RouteParameters<T extends SafeRoutePath> = {
   RequiredBoth: [params: SafeRouteParams<T>, searchParams: SafeRouteSearchParams<T>];
@@ -93,81 +95,81 @@ export const safeRoutes = {
 "/login": {
   params: {} as Record<string, never>,
   // @ts-ignore
-  searchParams: {} as import("../app/(auth)/login/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/(auth)/login/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/blog/[slug]/[hoge]": {
   params: {} as { slug: string | number, hoge: string | number },
   // @ts-ignore
-  searchParams: {} as import("../app/blog/[slug]/[hoge]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/blog/[slug]/[hoge]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/blog/[slug]": {
   params: {} as { slug: string | number },
   // @ts-ignore
-  searchParams: {} as import("../app/blog/[slug]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/blog/[slug]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/": {
   params: {} as Record<string, never>,
   // @ts-ignore
-  searchParams: {} as import("../app/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/products": {
   params: {} as Record<string, never>,
   // @ts-ignore
-  searchParams: {} as import("../app/products/[[...filters]]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/products/[[...filters]]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/products/[[...filters]]": {
   params: {} as { filters: string[] | number[] },
   // @ts-ignore
-  searchParams: {} as import("../app/products/[[...filters]]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/products/[[...filters]]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/shop/[...categories]": {
   params: {} as { categories: string[] | number[] },
   // @ts-ignore
-  searchParams: {} as import("../app/shop/[...categories]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/shop/[...categories]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/shop": {
   params: {} as Record<string, never>,
   // @ts-ignore
-  searchParams: {} as import("../app/shop/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/shop/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/users/[user_id]/[year]/[month]": {
   params: {} as { userId: string | number, year: string | number, month: string | number },
   // @ts-ignore
-  searchParams: {} as import("../app/users/[user_id]/[year]/[month]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/users/[user_id]/[year]/[month]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/users/[user_id]": {
   params: {} as { userId: string | number },
   // @ts-ignore
-  searchParams: {} as import("../app/users/[user_id]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/users/[user_id]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/users/[user_id]/posts/[post-id]": {
   params: {} as { userId: string | number, postId: string | number },
   // @ts-ignore
-  searchParams: {} as import("../app/users/[user_id]/posts/[post-id]/page.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../app/users/[user_id]/posts/[post-id]/page.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/about": {
   params: {} as Record<string, never>,
   // @ts-ignore
-  searchParams: {} as import("../pages/about.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../pages/about.tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/docs/[...slug]": {
   params: {} as { slug: string[] | number[] },
   // @ts-ignore
-  searchParams: {} as import("../pages/docs/[...slug].tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../pages/docs/[...slug].tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/video": {
   params: {} as Record<string, never>,
   // @ts-ignore
-  searchParams: {} as import("../pages/video/[[...name]].tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../pages/video/[[...name]].tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/video/[[...name]]": {
   params: {} as { name: string[] | number[] },
   // @ts-ignore
-  searchParams: {} as import("../pages/video/[[...name]].tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../pages/video/[[...name]].tsx").SearchParams & import("./types").GlobalSearchParams>
 },
 "/video/[id]": {
   params: {} as { id: string | number },
   // @ts-ignore
-  searchParams: {} as import("../pages/video/[id]/index.tsx").SearchParams
+  searchParams: {} as ExportedQuery<import("../../pages/video/[id]/index.tsx").SearchParams & import("./types").GlobalSearchParams>
 }
 } as const;

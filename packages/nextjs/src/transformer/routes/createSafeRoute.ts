@@ -7,6 +7,8 @@ type IsAllOptional<T> = { [K in keyof T]?: any } extends T ? true : false;
 type HasSearchParams<T> = T extends { searchParams: undefined } ? false : true;
 type HasParams<T> = T extends Record<string, never> ? false : true
 type PickSearchParams<T extends SafeRoutePath> = Pick<typeof safeRoutes[T], 'searchParams'>;
+type IsSearchParams<T> = symbol extends keyof T ? false : true;
+type ExportedQuery<T> = IsSearchParams<T> extends true ? T & import("./types").GlobalSearchParams : import("./types").GlobalSearchParams;
 
 type RouteParameters<T extends SafeRoutePath> = {
   RequiredBoth: [params: SafeRouteParams<T>, searchParams: SafeRouteSearchParams<T>];
