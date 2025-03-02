@@ -1,3 +1,4 @@
 module.exports = {
-  ...require(".safe-routes/index.js"),
+  ...require("generated/safe-routes/index.js"),
+  ...require("./dist/index.js"),
 };

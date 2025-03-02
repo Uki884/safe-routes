@@ -3,10 +3,13 @@ export const createSafeRoute = () => {
 export type SafeRouteSearchParams<T extends SafeRoutePath> = (typeof safeRoutes)[T]['searchParams'];
 export type SafeRoutes = typeof safeRoutes;
 
+type GlobalSearchParams = import("./types").SearchParams;
 type IsAllOptional<T> = { [K in keyof T]?: any } extends T ? true : false;
 type HasSearchParams<T> = T extends { searchParams: undefined } ? false : true;
 type HasParams<T> = T extends Record<string, never> ? false : true
 type PickSearchParams<T extends SafeRoutePath> = Pick<typeof safeRoutes[T], 'searchParams'>;
+type IsSearchParams<T> = symbol extends keyof T ? false : true;
+type ExportedQuery<T> = IsSearchParams<T> extends true ? T & GlobalSearchParams :  GlobalSearchParams;
 
 type RouteParameters<T extends SafeRoutePath> = {
   RequiredBoth: [params: SafeRouteParams<T>, searchParams: SafeRouteSearchParams<T>];
@@ -30,7 +33,7 @@ type SafeRouteArgs<T extends SafeRoutePath> =
         : RouteParameters<T>['SearchOnly']
       : RouteParameters<T>['None'];
 
-export function safeRoute<T extends SafeRoutePath>(
+export function $path<T extends SafeRoutePath>(
   path: T,
   ...args: SafeRouteArgs<T>
 ): T {

@@ -2,4 +2,4 @@
 export type SearchParams = {
   page: number;
 };
-export default function UserPostPage() {} 
+export default function UserPostPage() {}

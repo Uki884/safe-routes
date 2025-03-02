@@ -1,11 +1,12 @@
 import path from "path";
+import fs from "fs/promises";
 import { readdir } from "fs/promises";
+import { generateSearchParamsType } from "../generator/generateSearchParamsType";
 import { RouteFunctionDefinition, RouteSegment } from "../types";
 import { isIgnoreRoute } from "./utils/isIgnoreRoute";
 import { isPage } from "./utils/isPage";
 import { isRouteGroup } from "./utils/isRouteGroup";
 import { parseRouteSegment } from "./utils/parseRouteSegment";
-import { generateSearchParamsType } from "../generator/generateSearchParamsType";
 
 function getStaticParentPath(segments: RouteSegment[]): string | undefined {
   return segments
@@ -14,7 +15,10 @@ function getStaticParentPath(segments: RouteSegment[]): string | undefined {
     .join("/");
 }
 
-export function createAppScanner({ inputDir, outDir }: { inputDir?: string, outDir: string }) {
+export function createAppScanner({
+  inputDir,
+  outDir,
+}: { inputDir?: string; outDir: string }) {
   if (!inputDir) {
     return undefined;
   }
@@ -46,6 +50,12 @@ export function createAppScanner({ inputDir, outDir }: { inputDir?: string, outD
           searchParamsType,
         });
       } else {
+        const isDirectory = (await fs.stat(fullPath)).isDirectory();
+
+        if (!isDirectory) {
+          continue;
+        }
+
         // handle route group
         if (isRouteGroup(item)) {
           routes.push(

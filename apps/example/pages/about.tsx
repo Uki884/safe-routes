@@ -1,10 +1,10 @@
-import { safeRoute, safeRoutes } from "@safe-routes/nextjs";
+import { $path } from "@safe-routes/nextjs";
 
 export type SearchParams = {
   locale: "en";
 };
 
 export default function AboutPage() {
-  console.log(safeRoute("/about", { locale: 'en'}));
+  console.log($path("/about", { locale: "en" }));
   return <h1>About Page</h1>;
 }

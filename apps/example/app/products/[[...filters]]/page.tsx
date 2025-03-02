@@ -1,5 +1,5 @@
 export type SearchParams = {
-  sort?: "asc" | "desc";
+  sort: "asc" | "desc";
   page: number;
 };
 

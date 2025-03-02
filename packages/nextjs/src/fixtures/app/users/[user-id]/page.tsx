@@ -2,4 +2,4 @@
 export type SearchParams = {
   filter?: string;
 };
-export default function UserPage() {} 
+export default function UserPage() {}

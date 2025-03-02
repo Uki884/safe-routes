@@ -1,6 +1,5 @@
 export const transformFunctionShared = () => {
-  return `
-export type SearchParams = {
+  return `export type SearchParams = {
   [key: string]: string | number | (string | number)[];
 };
 

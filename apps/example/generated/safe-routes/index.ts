@@ -1,4 +1,3 @@
-
 export type SearchParams = {
   [key: string]: string | number | (string | number)[];
 };
@@ -29,16 +28,19 @@ const buildSearchParams = (params?: SearchParams): string => {
   return `?${searchParams.toString()}`;
 };
 
-export type SafeRoutePath = "/login" | "/blog/[slug]/[hoge]" | "/blog/[slug]" | "/" | "/products/[[...filters]]" | "/products" | "/shop/[...categories]" | "/shop" | "/users/[user_id]/[year]/[month]" | "/users/[user_id]" | "/users/[user_id]/posts/[post-id]" | "/about" | "/docs/[...slug]" | "/video/[[...name]]" | "/video" | "/video/[id]";;
+export type SafeRoutePath = "/login" | "/blog/[slug]/[hoge]" | "/blog/[slug]" | "/products/[[...filters]]" | "/products" | "/shop/[...categories]" | "/shop" | "/top" | "/users/[user_id]/[year]/[month]" | "/users/[user_id]" | "/users/[user_id]/posts/[post-id]" | "/about" | "/docs/[...slug]" | "/video/[[...name]]" | "/video" | "/video/[id]";;
 
 export type SafeRouteParams<T extends SafeRoutePath> = (typeof safeRoutes)[T]['params'];
 export type SafeRouteSearchParams<T extends SafeRoutePath> = (typeof safeRoutes)[T]['searchParams'];
 export type SafeRoutes = typeof safeRoutes;
 
+type GlobalSearchParams = import("./types").SearchParams;
 type IsAllOptional<T> = { [K in keyof T]?: any } extends T ? true : false;
 type HasSearchParams<T> = T extends { searchParams: undefined } ? false : true;
 type HasParams<T> = T extends Record<string, never> ? false : true
 type PickSearchParams<T extends SafeRoutePath> = Pick<typeof safeRoutes[T], 'searchParams'>;
+type IsSearchParams<T> = symbol extends keyof T ? false : true;
+type ExportedQuery<T> = IsSearchParams<T> extends true ? T & GlobalSearchParams :  GlobalSearchParams;
 
 type RouteParameters<T extends SafeRoutePath> = {
   RequiredBoth: [params: SafeRouteParams<T>, searchParams: SafeRouteSearchParams<T>];
@@ -62,7 +64,7 @@ type SafeRouteArgs<T extends SafeRoutePath> =
         : RouteParameters<T>['SearchOnly']
       : RouteParameters<T>['None'];
 
-export function safeRoute<T extends SafeRoutePath>(
+export function $path<T extends SafeRoutePath>(
   path: T,
   ...args: SafeRouteArgs<T>
 ): T {
@@ -92,82 +94,98 @@ export function safeRoute<T extends SafeRoutePath>(
 export const safeRoutes = {
 "/login": {
   params: {} as Record<string, never>,
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/(auth)/login/page.tsx").SearchParams
+  import("../../app/(auth)/login/page.tsx").SearchParams>
 },
 "/blog/[slug]/[hoge]": {
   params: {} as { slug: string | number, hoge: string | number },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/blog/[slug]/[hoge]/page.tsx").SearchParams
+  import("../../app/blog/[slug]/[hoge]/page.tsx").SearchParams>
 },
 "/blog/[slug]": {
   params: {} as { slug: string | number },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/blog/[slug]/page.tsx").SearchParams
-},
-"/": {
-  params: {} as Record<string, never>,
-  // @ts-ignore
-  searchParams: {} as import("../app/page.tsx").SearchParams
+  import("../../app/blog/[slug]/page.tsx").SearchParams>
 },
 "/products": {
   params: {} as Record<string, never>,
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/products/[[...filters]]/page.tsx").SearchParams
+  import("../../app/products/[[...filters]]/page.tsx").SearchParams>
 },
 "/products/[[...filters]]": {
   params: {} as { filters: string[] | number[] },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/products/[[...filters]]/page.tsx").SearchParams
+  import("../../app/products/[[...filters]]/page.tsx").SearchParams>
 },
 "/shop/[...categories]": {
   params: {} as { categories: string[] | number[] },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/shop/[...categories]/page.tsx").SearchParams
+  import("../../app/shop/[...categories]/page.tsx").SearchParams>
 },
 "/shop": {
   params: {} as Record<string, never>,
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/shop/page.tsx").SearchParams
+  import("../../app/shop/page.tsx").SearchParams>
+},
+"/top": {
+  params: {} as Record<string, never>,
+  searchParams: {} as ExportedQuery<
+  // @ts-ignore
+  import("../../app/top/page.tsx").SearchParams>
 },
 "/users/[user_id]/[year]/[month]": {
   params: {} as { userId: string | number, year: string | number, month: string | number },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/users/[user_id]/[year]/[month]/page.tsx").SearchParams
+  import("../../app/users/[user_id]/[year]/[month]/page.tsx").SearchParams>
 },
 "/users/[user_id]": {
   params: {} as { userId: string | number },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/users/[user_id]/page.tsx").SearchParams
+  import("../../app/users/[user_id]/page.tsx").SearchParams>
 },
 "/users/[user_id]/posts/[post-id]": {
   params: {} as { userId: string | number, postId: string | number },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../app/users/[user_id]/posts/[post-id]/page.tsx").SearchParams
+  import("../../app/users/[user_id]/posts/[post-id]/page.tsx").SearchParams>
 },
 "/about": {
   params: {} as Record<string, never>,
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../pages/about.tsx").SearchParams
+  import("../../pages/about.tsx").SearchParams>
 },
 "/docs/[...slug]": {
   params: {} as { slug: string[] | number[] },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../pages/docs/[...slug].tsx").SearchParams
+  import("../../pages/docs/[...slug].tsx").SearchParams>
 },
 "/video": {
   params: {} as Record<string, never>,
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../pages/video/[[...name]].tsx").SearchParams
+  import("../../pages/video/[[...name]].tsx").SearchParams>
 },
 "/video/[[...name]]": {
   params: {} as { name: string[] | number[] },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../pages/video/[[...name]].tsx").SearchParams
+  import("../../pages/video/[[...name]].tsx").SearchParams>
 },
 "/video/[id]": {
   params: {} as { id: string | number },
+  searchParams: {} as ExportedQuery<
   // @ts-ignore
-  searchParams: {} as import("../pages/video/[id]/index.tsx").SearchParams
+  import("../../pages/video/[id]/index.tsx").SearchParams>
 }
 } as const;

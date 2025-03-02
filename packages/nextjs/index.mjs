@@ -1,1 +1,2 @@
-export * from ".safe-routes";
+export { $path } from "generated/safe-routes";
+export { createSearchParams, parseSearchParams } from "./dist";
