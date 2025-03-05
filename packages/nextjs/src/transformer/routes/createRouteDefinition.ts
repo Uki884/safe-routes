@@ -1,4 +1,5 @@
 import { FileContentOption, RouteFunctionDefinition } from "../../types";
+import { RouteSegment } from "../../types/route";
 import { convertPathToParamFormat } from "./createRoutePaths";
 
 type CreateRouteDefinitionOption = {
@@ -6,49 +7,76 @@ type CreateRouteDefinitionOption = {
   options: FileContentOption["options"];
 };
 
-export const createRouteDefinition = ({ route, options }: CreateRouteDefinitionOption) => {
+type RouteDefinitionResult = {
+  path: string;
+  definition: string;
+};
+
+export const createRouteDefinition = ({
+  route,
+  options,
+}: CreateRouteDefinitionOption):
+  | RouteDefinitionResult
+  | RouteDefinitionResult[] => {
   const path =
     route.routeSegments.length === 0
       ? `"/"`
-      : `"/${convertPathToParamFormat(route.routeSegments)}${options.trailingSlash ? "/" : ""}"`;
+      : `"/${convertPathToParamFormat(route.routeSegments)}${
+          options.trailingSlash ? "/" : ""
+        }"`;
 
   const hasOptionalCatchAll = route.routeSegments.some(
-    (s) => s.dynamicType === "optional-catch-all"
+    (s: RouteSegment) => s.dynamicType === "optional-catch-all",
   );
 
-  if (hasOptionalCatchAll) {
-    const basePath = `"/${route.routeSegments
-      .filter(s => s.dynamicType !== "optional-catch-all")
-      .map(s => s.rawParamName)
-      .join("/")}${options.trailingSlash ? "/" : ""}"`;
+  const searchParamsType = route.searchParamsType;
+  const paramsType = createParamsType(route);
 
-    return `${basePath}: {
-  params: {} as Record<string, never>,
-  // @ts-ignore
-  searchParams: {} as ${route.searchParamsType}
-},
-${path}: {
-  params: {} as ${createParamsType(route, true)},
-  // @ts-ignore
-  searchParams: {} as ${route.searchParamsType}
-}`;
-}
+  // 通常のルートの場合
+  if (!hasOptionalCatchAll) {
+    return {
+      path: path.replace(/"/g, ""),
+      definition: `{
+  params: ${paramsType},
+  searchParams: ExportedQuery<${searchParamsType}>
+}`,
+    };
+  }
 
-  return `${path}: {
-  params: {} as ${createParamsType(route)},
-  // @ts-ignore
-  searchParams: {} as ${route.searchParamsType}
-}`;
+  const basePath = `"/${route.routeSegments
+    .filter((s: RouteSegment) => s.dynamicType !== "optional-catch-all")
+    .map((s: RouteSegment) => s.rawParamName)
+    .join("/")}${options.trailingSlash ? "/" : ""}"`;
+
+  return [
+    {
+      path: basePath.replace(/"/g, ""),
+      definition: `{
+  params: Record<string, never>,
+  searchParams: ExportedQuery<${searchParamsType}>
+}`,
+    },
+    {
+      path: path.replace(/"/g, ""),
+      definition: `{
+  params: ${createParamsType(route, true)},
+  searchParams: ExportedQuery<${searchParamsType}>
+}`,
+    },
+  ];
 };
 
-const createParamsType = (route: RouteFunctionDefinition, makeRequired = false) => {
-  if (!route.routeSegments.some((s) => s.isDynamic)) {
+const createParamsType = (
+  route: RouteFunctionDefinition,
+  makeRequired = false,
+): string => {
+  if (!route.routeSegments.some((s: RouteSegment) => s.isDynamic)) {
     return "Record<string, never>";
   }
 
   const params = route.routeSegments
-    .filter((s) => s.isDynamic)
-    .map((s) => {
+    .filter((s: RouteSegment) => s.isDynamic)
+    .map((s: RouteSegment) => {
       switch (s.dynamicType) {
         case "catch-all":
           return `${s.paramName}: string[] | number[]`;

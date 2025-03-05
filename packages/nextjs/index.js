@@ -1,3 +1,8 @@
-module.exports = {
-  ...require(".safe-routes/index.js"),
-};
+export {
+  parseSearchParams,
+  createSearchParams,
+  setGlobalSearchParams,
+  createGlobalSearchParams,
+} from "./dist/index.js";
+
+export { $path } from "./dist/path.js";

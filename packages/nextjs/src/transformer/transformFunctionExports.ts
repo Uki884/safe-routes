@@ -1,19 +1,24 @@
 import { FileContentOption } from "../types";
 import { createRouteDefinition } from "./routes/createRouteDefinition";
-import { createRoutePaths } from "./routes/createRoutePaths";
 import { createSafeRoute } from "./routes/createSafeRoute";
 
-export const transformFunctionExports = ({ routes, options }: FileContentOption) => {
-  const routePaths = createRoutePaths({ routes, options });
-  const routeDefinitions = routes.map((route) => createRouteDefinition({ route, options }));
+export const transformFunctionExports = ({
+  routes,
+  options,
+}: FileContentOption) => {
+  const routeDefinitionsArray: { path: string; definition: string }[] = [];
+  for (const route of routes) {
+    const result = createRouteDefinition({ route, options });
+    if (Array.isArray(result)) {
+      routeDefinitionsArray.push(...result);
+    } else if (result) {
+      routeDefinitionsArray.push(result);
+    }
+  }
+
   const safeRoute = createSafeRoute();
 
   return `
-export type SafeRoutePath = ${routePaths};
-
-${safeRoute}
-
-export const safeRoutes = {
-${routeDefinitions.join(",\n")}
-} as const;`;
+${safeRoute};
+`;
 };

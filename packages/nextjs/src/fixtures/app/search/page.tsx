@@ -2,4 +2,4 @@
 export type SearchParams = {
   q: string;
 };
-export default function SearchPage() {} 
+export default function SearchPage() {}

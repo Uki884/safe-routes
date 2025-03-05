@@ -1,6 +1,10 @@
 import { RouteFunctionDefinition } from "./route";
 
-export type { DynamicRouteType, RouteFunctionDefinition, RouteSegment } from "./route";
+export type {
+  DynamicRouteType,
+  RouteFunctionDefinition,
+  RouteSegment,
+} from "./route";
 
 export type FileContentOption = {
   routes: RouteFunctionDefinition[];
@@ -9,6 +13,6 @@ export type FileContentOption = {
 
 export type UserOptions = {
   trailingSlash: boolean;
-  outDir?: string;
+  outDir: string;
   watch?: boolean;
 };
